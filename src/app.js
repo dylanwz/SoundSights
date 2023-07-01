@@ -8,7 +8,9 @@ import express from 'express';
 import NodeGeocoder from 'node-geocoder';
 
 import {createEntry, updateEntry, getEntry} from "./datastore.js";
-
+import fs from 'fs';
+console.log('Loading OSM Database, this may take a minute...');
+let amenities = JSON.parse(fs.readFileSync('amenities.json'));
 
 const geocoder = NodeGeocoder({
     provider: 'google',
@@ -21,7 +23,9 @@ const geocoder = NodeGeocoder({
 // updateEntry(a, {hello: 'world'});
 // console.log(getEntry(a));
 
-
+// console.dir(amenities);
+// console.log('Loaded!');
+// console.log(amenities.filter((v) => {return v.amenity == 'pub'  && v.lon < -0.67 && v.lat < 52.0})[0]);
 
 var app = express();
 
@@ -77,6 +81,12 @@ app.get('/connect', async (req, res) => {
 
 app.get('/results', function (req, res) {
     res.render('pages/results.ejs');
+});
+
+app.get('/queryResults', function (req, res) {
+    if (!req.query || !req.query.id)
+        return;
+    res.send(getEntry(req.query.id));
 });
 
 app.get('/verifyAddress', async function (req, res) {

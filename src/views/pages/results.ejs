@@ -6,14 +6,58 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoundSights</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Roboto+Mono&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/results.css">
+    <script src="js/results.js"></script>
+
+
+
 </head>
 
 <body>
-    <%- include('../partials/header'); -%>
 
-        <main>
-            Loading results..
-        </main>
+    <main>
+        <div class="splash" style="display:none;">
+            <span class="splash-head">Hang Tight! We're still cooking a tailored list of locations to visit just for
+                you 🧑‍🍳</span>
+            <div class="lds-ring">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="splash-list">
+                <div class="splash-list-inner">
+
+                </div>
+
+            </div>
+        </div>
+        <div class="results">
+            <div class="results-head">
+                <span>Your Specially Crafted Tour For</span>
+                <span class="results-country">Amsterdam, Netherlands</span>
+            </div>
+            <span class="section-heading">Events we know you will enjoy</span>
+            <div class="event-container">
+                <div class="event-item">
+                    
+                </div>
+            </div>
+            <span class="section-heading">Places we think you'll feel right at home</span>
+            <span class="section-heading">Your Top Genres</span>
+        </div>
+    </main>
 </body>
+
+<footer>
+    <script>
+        // Lil jank but starts the loading process at end
+        // addToSplash();
+        </script>
+</footer>
 
 </html>
