@@ -12,8 +12,6 @@ function deundefiner(genre) {
     return 'k-pop';
 
   return genres.parent_genres.find((gen) => { return genre.includes(gen) })
-  return genres.parent_genres.find((gen) => { return genre.includes(gen) })
-
 }
 
 function get_spotify_genres(artist_arr) {
