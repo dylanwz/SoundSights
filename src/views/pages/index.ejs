@@ -1,22 +1,45 @@
-<main>
-    <style>
-        .test {
-            font-family: 'Poppins', sans-serif;
-        }
+<!DOCTYPE html>
+<html lang="en">
 
-        .gradient {
-            font-size: 72px;
-            background: -webkit-linear-gradient(#eee, #333);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
-    <div style="text-align:center;margin:20px 0;">
-        <span class="test" style="
-        color: #a6a4a4;
-        font-weight: normal;
-    ">Sound</span>
-        <span class="test gradient"
-           >Sights</span>
-    </div>
-</main>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoundSights</title>
+</head>
+
+<body>
+    <%- include('../partials/header'); -%>
+
+        <main>
+
+            <div class="logo">
+                <span>Sound</span>
+                <span class="gradient-logo">Sights</span>
+            </div>
+
+            <span class="page-subtitle">
+                Discover your perfect travel destinations with a single playlist.
+            </span>
+
+            <button class="try-button" onclick="tryItOut();">
+                Try It Out
+            </button>
+
+
+            <div class="animation-container-outer">
+                <div class="animation-container" id="animation-container">
+                </div>
+            </div>
+        </main>
+
+
+        <div id="signin-page" class="signin-page">
+            <span class="signin-heading">Sign in with your favourite streaming service to get started!</span>
+            <button class="signin-spotify">Sign In With Spotify</button>
+            <button class="signin-apple">Sign In With Apple Music</button>
+        </div>
+
+</body>
+
+</html>
