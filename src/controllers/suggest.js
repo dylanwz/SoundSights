@@ -56,8 +56,11 @@ function findPlacesAndEvents(genresArtists, placeArr) {
 // Sort genre-matched places by frequency
 export function suggest(top_genres, placeArr) {
   // Filter out non-existent genres
-  delete top_genres['other'];
-
+  let k = Object.keys(top_genres);
+  for(let i = 0; i < k.length; i++) {
+    if(!suggestedVenues[k[i]])
+      delete top_genres[k[i]];
+  }
   let sorted_genres = Object.fromEntries(Object.entries(Object.keys(top_genres).map((genre) => suggestedVenues[genre].reduce(function (acc, curr) {
     return (
       acc[curr] ? acc[curr] += top_genres[genre] : acc[curr] = top_genres[genre], acc
