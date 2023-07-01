@@ -1,7 +1,6 @@
 import genres from "../genres.json" assert { type: 'json' };
 import genres_dict from "../genres_dict.json" assert { type: 'json' };
 import suggestedVenues from "../suggestedVenues.json" assert { type: 'json' };
-import suggestedVenues from "../suggestedVenues.json" assert { type: 'json' };
 
 // TO-DO: API for live events (get the data from the API---a Python child -> predictHQ)
 // TO-DO: Suggest places and events off of top genres
@@ -12,11 +11,10 @@ function deundefiner(genre) {
     return 'k-pop';
 
   return genres.parent_genres.find((gen) => { return genre.includes(gen) })
-  return genres.parent_genres.find((gen) => { return genre.includes(gen) })
 
 }
 
-function get_spotify_genres(artist_arr) {
+export function get_spotify_genres(artist_arr) {
   let num = 0, genres_res = artist_arr
     .map(artist => artist.genres)
     .flat()
@@ -56,7 +54,10 @@ function findPlacesAndEvents(genresArtists, placeArr) {
 }
 
 // Sort genre-matched places by frequency
-function suggest(top_genres, placeArr) {
+export function suggest(top_genres, placeArr) {
+  // Filter out non-existent genres
+  delete top_genres['other'];
+
   let sorted_genres = Object.fromEntries(Object.entries(Object.keys(top_genres).map((genre) => suggestedVenues[genre].reduce(function (acc, curr) {
     return (
       acc[curr] ? acc[curr] += top_genres[genre] : acc[curr] = top_genres[genre], acc

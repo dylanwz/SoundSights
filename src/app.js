@@ -6,8 +6,11 @@ import http from 'http';
 import express from 'express';
 
 import NodeGeocoder from 'node-geocoder';
+import session from 'express-session';
 
-import {createEntry, updateEntry, getEntry} from "./datastore.js";
+
+import { createEntry, updateEntry, getEntry } from "./datastore.js";
+import { get_spotify_genres, suggest } from "./controllers/suggest.js"
 import fs from 'fs';
 console.log('Loading OSM Database, this may take a minute...');
 let amenities = JSON.parse(fs.readFileSync('amenities.json'));
@@ -28,6 +31,7 @@ const geocoder = NodeGeocoder({
 // console.log(amenities.filter((v) => {return v.amenity == 'pub'  && v.lon < -0.67 && v.lat < 52.0})[0]);
 
 var app = express();
+app.use(session({ secret: 'Whyisthiscodebasegettingsojank', cookie: { maxAge: 60000, secure: false } }))
 
 
 app.use("/", express.static('public'))
@@ -72,11 +76,62 @@ app.get('/connect', async (req, res) => {
         return;
     }
     console.dir(spotify_data.data.items);
-   
+
     // Create a database entry to put the computed values in
     let id = createEntry();
 
     res.redirect('/results?id=' + id);
+
+    // Now do processing
+    setTimeout(() => {
+        // Get desired location
+        let location = req.session.location;
+        console.log(location);
+        if (location == '') {
+            console.log('something went wrong');
+            return;
+        }
+
+        let rad = 0.3; //0.3deg ~= 30km radius
+
+        let latL = location.latitude - rad;
+        let latU = location.latitude + rad;
+        let lonL = location.longitude - rad;
+        let lonU = location.longitude + rad;
+        // console.log(latL);
+        // console.log(latU);
+        // console.log(lonL);
+        // console.log(lonU);
+        let osm_venues = suggest(get_spotify_genres(spotify_data.data.items), {});
+        let venue_keys = Object.keys(osm_venues);
+        // console.dir(osm_venues);
+
+        let result = {
+            location: location,
+            places: [],
+        };
+        // Query OSMdb (Capped at 8)
+        for (let i = 0; i < Math.min(venue_keys.length, 8); i++) {
+            // console.log(osm_venues[venue_keys[i]]);
+            // Filter list
+            let a = amenities.filter((amenity) => {
+                return (
+                    amenity.amenity == venue_keys[i] &&
+                    amenity.lat > latL &&
+                    amenity.lat < latU &&
+                    amenity.lon > lonL &&
+                    amenity.lon < lonU
+                )
+            })
+            if (a.length > 1) {
+                let obj = a[Math.floor(Math.random() * a.length)];
+                obj['match'] = osm_venues[venue_keys[i]];
+                result.places.push(obj);
+            }
+        }
+        updateEntry(id, result);
+        // console.log('Done querying');
+    }, 3000);
 })
 
 app.get('/results', function (req, res) {
@@ -93,6 +148,7 @@ app.get('/verifyAddress', async function (req, res) {
     if (!req.query || !req.query.address)
         res.send({ ok: false, location: '' });
     const response = await geocoder.geocode(req.query.address);
+    req.session.location = response[0];
     if (response.length == 0)
         res.send({ ok: false, location: '' });
     else

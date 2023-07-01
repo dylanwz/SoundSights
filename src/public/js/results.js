@@ -5,6 +5,28 @@ let splashText = [
 ]
 let curSplashItem = 0;
 let splashInterval;
+let id;
+
+function run() {
+    id = new URLSearchParams(window.location.search).get('id');
+    
+    addToSplash();
+    checkIfReady();
+}
+let res;
+async function checkIfReady() {
+    res = await(await fetch('/queryResults?id=' + id)).json();
+    if (!res || !res.location)
+        setTimeout(()=>{checkIfReady()},1000);
+    else {
+        window.clearInterval(splashInterval);
+        populateData();
+        document.getElementsByClassName('splash')[0].style.display = 'none';
+        document.getElementsByClassName('results')[0].style.display = 'flex';
+        document.getElementById('shareablelink').textContent = window.location.href.replace('http://','');
+    }
+    // console.dir(res);
+}
 
 function addToSplash() {
     splashInterval = window.setInterval(() => {
@@ -13,4 +35,9 @@ function addToSplash() {
         curSplashItem++;
         document.querySelector('.splash-list-inner').appendChild(span);
     }, 2000);
+}
+
+function populateData() {
+    document.querySelector('.results-country').textContent = res.location.formattedAddress;
+
 }
