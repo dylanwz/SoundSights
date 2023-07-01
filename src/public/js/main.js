@@ -6,27 +6,56 @@ function moveToLocationPage() {
     // Move the main to the side
     document.getElementsByTagName('main')[0].style.left = '-100vw';
     // Then move in the div with id="location-page"
-    
+
     let locationpage = document.getElementById('location-page');
     locationpage.style.transitionDelay = '0.5s';
     locationpage.style.left = '0px';
 
-    
+}
+let addressValid = false;
+let pendingTransitionToSignin = false;
+let address = '';
+
+function addressChanged() {
+    addressValid = false;
+    document.querySelector('.lds-ring').style.display = 'block';
+}
+
+async function checkAddress(element) {
+    const res = await (await fetch(`/verifyAddress?address="${encodeURI(element.value.trim())}`)).json();
+    if (res.ok) {
+        address = element.value = res.location;
+        document.querySelector('.location-error').style.display = 'none';
+        addressValid = true;
+
+    } else {
+        addressValid = true;
+        document.querySelector('.location-error').style.display = 'block';
+    }
+
+    document.querySelector('.lds-ring').style.display = 'none';
+
+    if (pendingTransitionToSignin) {
+        setTimeout(()=>{moveToSigninPage()},500);
+    }
 }
 
 
 function moveToSigninPage() {
+    if (!addressValid)
+        return (pendingTransitionToSignin = true);
+
     // Move the location to the side
     let locationpage = document.getElementById('location-page');
     locationpage.style.transitionDelay = '0s';
     locationpage.style.left = '-100vw';
-   
+
     let signin = document.getElementById('signin-page');
     signin.style.transitionDelay = '0.5s';
-    signin.style.left = '0px';    
+    signin.style.left = '0px';
 }
 
-window.setTimeout(()=> {beginAnimation()}, 2000);
+window.setTimeout(() => { beginAnimation() }, 2000);
 
 function beginAnimation() {
     let animationContainer = document.getElementById('animation-container');
@@ -85,7 +114,7 @@ function beginAnimation() {
         'https://cdn.tourbytransit.com/sydney/images/Luna-Park-Entrance-at-night.jpg'
     ]
 
-    let labels = ['Home The Venue','Vivid Sydney', 'Ivy Club', 'Light It Up Festival','Lunar Park Sydney'];
+    let labels = ['Home The Venue', 'Vivid Sydney', 'Ivy Club', 'Light It Up Festival', 'Lunar Park Sydney'];
 
     // another 2s later
     let venueContainer = document.createElement('div');
