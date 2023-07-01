@@ -5,9 +5,9 @@
 const { exec } = require('node:child_process')
 // Calculating places based of genres and lists of places
 function suggest(genre, placeArr, eventsArr) {
-    // Match genre to types of place
-    places = exec(`python /places.py arg1 arg2 arg3 arg4`);
-    events = exec(`python /events.py arg1 arg2`);
+    // Match genre to types of places and events
+    places = exec(`python /places.py '\"\" '\"\"' '\"\"' 'New York'`);
+    events = exec(`python /events.py concerts AU`);
     return {
         places: places,
         events: events,
