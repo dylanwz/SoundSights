@@ -6,17 +6,35 @@ import sys
 arguments = sys.argv[1:]
 for arg in arguments:
     print("argument: " + arg)
+    
+def findRadius(location, industry = "parking"):
+    locStr = f"{location.split()[0]}, {location.split()[1]}"
+    response = requests.get(
+        url="https://api.predicthq.com/v1/suggested-radius/",
+        headers={
+        "Authorization": "Bearer wXve6QIrhxeqgp-jhLVGq37jrHAudfa2XB6ZYY9W",
+        "Accept": "application/json"
+        },
+        params={
+            "location.origin": locStr,
+            "industry": industry,
+            "radius_unit": "km"
+        }
+    )
+    return response.json();
 
 # Can retrieve select information via RV['results'][index: int][id/parent_event/title/description/category/labels/rank/local_rank/aviation_rank/entities/duration/start/end/updated/timezone/location/geo/scope/country/place_heirarhies/state/private]
 # NULL arguments break the get, set defaults for now
-def getEvent(category = "concerts", country = "AU", title = ""):
+def getEvent(category = "concerts", country = "AU", title = "", userLoc = "0 0"):
     if category == "\"\"":
         category = "performing-arts"
     if country == "\"\"":
         country = "AU"
     if title == "\"\"":
         title = ""
-    eventsInCountry = {};
+    eventsInCountry = {}
+    radiusToSearch = findRadius(userLoc)
+    print(radiusToSearch)
     response = requests.get(
         url="https://api.predicthq.com/v1/events/",
         headers={
@@ -27,6 +45,7 @@ def getEvent(category = "concerts", country = "AU", title = ""):
             "category": category,
             "country": country,
             "title": title,
+            "within": f"{radiusToSearch['radius']}{radiusToSearch['radius_unit']}@{radiusToSearch['location']['lat']},{radiusToSearch['location']['lon']}",
             # "id": "",
             "limit": 10
         }
@@ -45,4 +64,4 @@ def getEvent(category = "concerts", country = "AU", title = ""):
     print(eventsInCountry)
     return eventsInCountry
 
-getEvent(category = arguments[0], country = arguments[1], title = arguments[2])
+getEvent(category = arguments[0], country = arguments[1], title = arguments[2], userLoc = "0 0")
