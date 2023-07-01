@@ -72,6 +72,7 @@ app.get('/verifyAddress', async function (req, res) {
         res.send({ ok: true, location: response[0].formattedAddress });
 })
 
+
 var httpServer = http.createServer(app);
 
 httpServer.listen(3000);
