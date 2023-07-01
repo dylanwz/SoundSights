@@ -1,15 +1,29 @@
 function tryItOut() {
-    moveToSigninPage();
+    moveToLocationPage();
 }
 
-function moveToSigninPage() {
+function moveToLocationPage() {
     // Move the main to the side
     document.getElementsByTagName('main')[0].style.left = '-100vw';
-    // Then move in the div with id="signin-page"
+    // Then move in the div with id="location-page"
     
-    let signinpage = document.getElementById('signin-page');
-    signinpage.style.transitionDelay = '0.5s';
-    signinpage.style.left = '0px';
+    let locationpage = document.getElementById('location-page');
+    locationpage.style.transitionDelay = '0.5s';
+    locationpage.style.left = '0px';
+
+    
+}
+
+
+function moveToSigninPage() {
+    // Move the location to the side
+    let locationpage = document.getElementById('location-page');
+    locationpage.style.transitionDelay = '0s';
+    locationpage.style.left = '-100vw';
+   
+    let signin = document.getElementById('signin-page');
+    signin.style.transitionDelay = '0.5s';
+    signin.style.left = '0px';    
 }
 
 window.setTimeout(()=> {beginAnimation()}, 2000);
