@@ -72,12 +72,25 @@ function getEvents(top_genres, userLocation) {
             
         }
     }
-
     events = events.sort((a, b) => {
         return a.count <= b.count ? 1 : -1;
     })
 
-    return events;
+    const amenities = {};
+    for (const event of events) {
+        amenities.push({
+            "amentity": 'str',
+            "lat": event.details[1][0],
+            "lon": event.details[1][1],
+            "match": 0,
+            "name": event.title,
+        })
+    }
+
+    return {
+        events: events,
+        amenities: amenities
+    }
 }
 
 // Sort genre-matched places by frequency
@@ -100,11 +113,6 @@ export function suggest(top_genres) {
       return acc;  
     }, {})).sort((a,b) => { return b[1] - a[1] }));
   return sorted_genres;
-}
-
-function genreToVenue(sorted_genres, suggestedVenues) {
-
-    return bestAmenities;
 }
 
 console.log(suggest({'pop': 0.5, 'rock': 0.25, 'metal': 0.1, 'work-out': 0.1, 'bluegrass': 0.05}, {}))
