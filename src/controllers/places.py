@@ -26,14 +26,17 @@ def getPlace(country = "", id = "", location = "", q = ""):
             "id": id,
             "location": location,
             "q": q,
-            "limit": 100
+            # "type": "localadmin",
+            "limit": 1
         }
     )
 
-    print(response.json())
-    # for i in range(len(response.json()['results'])):
-    #     place = response.json()['results'][i]
-    #     print(f"{place['name']} - {place['region']}, {place['country']}")
+    # print(response.json())
+    for i in range(len(response.json()['results'])):
+        place = response.json()['results'][i]
+        print(place);
+        # if (country in place['country']):
+        #     print(f"{place['name']} - {place['region']}, {place['county']}, {place['country']}")
     return response.json()
 
 
