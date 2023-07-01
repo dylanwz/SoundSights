@@ -11,7 +11,7 @@ for arg in arguments:
 # NULL arguments break the get, set defaults for now
 def getEvent(category = "concerts", country = "AU", title = ""):
     if category == "\"\"":
-        category = "festivals"
+        category = "performing-arts"
     if country == "\"\"":
         country = "AU"
     if title == "\"\"":
