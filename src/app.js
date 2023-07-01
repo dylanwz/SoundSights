@@ -16,8 +16,8 @@ app.get('/', function (req, res) {
 });
 
 app.get('/signin', (req, res) => {
-    res.send(
-        "<a href='https://accounts.spotify.com/authorize?client_id=" + process.env.CLIENT_ID + "&response_type=code&redirect_uri=http://localhost:3000/" + process.env.REDIRECT_URL_KEY + "&scope=user-top-read'>Sign in</a>"
+    res.redirect(
+        "https://accounts.spotify.com/authorize?client_id=" + process.env.CLIENT_ID + "&response_type=code&redirect_uri=" + process.env.REDIRECT_URL + "&scope=user-top-read"
     );
 })
 
@@ -49,8 +49,6 @@ app.get('/connect', async (req,res) => {
 })
 
 app.get('/suggest', function (req, res) {
-    console.log("OOPS")
-
     res.render('pages/index.ejs');
 });
 
