@@ -1,8 +1,9 @@
-// var fs = require('fs');
-var http = require('http');
-// const path = require('path');
+import queryString from 'querystring';
+import axios from 'axios';
+import 'dotenv/config';
 
-const express = require('express')
+import http from 'http';
+import express from 'express';
 
 var app = express();
 
@@ -14,8 +15,43 @@ app.get('/', function (req, res) {
     res.render('pages/index.ejs');
 });
 
+app.get('/signin', (req, res) => {
+    res.send(
+        "<a href='https://accounts.spotify.com/authorize?client_id=" + process.env.CLIENT_ID + "&response_type=code&redirect_uri=http://localhost:3000/" + process.env.REDIRECT_URL_KEY + "&scope=user-top-read'>Sign in</a>"
+    );
+})
+
+app.get('/connect', async (req,res) => {
+    const spotify_token = await axios.post(
+        "https://accounts.spotify.com/api/token",
+        queryString.stringify({
+          grant_type: "authorization_code",
+          code: req.query.code,
+          redirect_uri: process.env.REDIRECT_URL,
+        }),
+        {
+          headers: {
+            Authorization: "Basic " + process.env.CLIENT_AUTHORISATION,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        }
+      );
+    const spotify_data = await axios.get(
+        "https://api.spotify.com/v1/me/top/artists?limit=50",
+        {
+            headers: {
+              Authorization: "Bearer " + spotify_token.data.access_token,
+            },
+          }
+    )
+    console.dir(spotify_data.data.items);
+    res.redirect('/suggest');
+})
+
 app.get('/suggest', function (req, res) {
-    pass;
+    console.log("OOPS")
+
+    res.render('pages/index.ejs');
 });
 
 var httpServer = http.createServer(app);
