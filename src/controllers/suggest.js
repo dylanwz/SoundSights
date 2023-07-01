@@ -1,6 +1,7 @@
 import genres from "../genres.json" assert { type: 'json' };
 import genres_dict from "../genres_dict.json" assert { type: 'json' };
 import suggestedVenues from "../suggestedVenues.json" assert { type: 'json' };
+import suggestedVenues from "../suggestedVenues.json" assert { type: 'json' };
 
 // TO-DO: API for live events (get the data from the API---a Python child -> predictHQ)
 // TO-DO: Suggest places and events off of top genres
@@ -8,9 +9,9 @@ import suggestedVenues from "../suggestedVenues.json" assert { type: 'json' };
 function deundefiner(genre) {
   // First check this override
   if (genre.includes('korean') || genre.includes('kpop'))
-  if (genre.includes('korean') || genre.includes('kpop'))
     return 'k-pop';
 
+  return genres.parent_genres.find((gen) => { return genre.includes(gen) })
   return genres.parent_genres.find((gen) => { return genre.includes(gen) })
 
 }
