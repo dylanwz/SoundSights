@@ -108,13 +108,18 @@ function beginAnimation() {
 
     imgs = [
         'https://static.ra.co/images/clubs/lg/au-homenightclub-large.jpg?dateUpdated=1521610616927',
+        'https://i.scdn.co/image/ab67616d0000b2734df3245f26298a1579ecc321',
         'https://www.commbank.com.au/content/dam/caas/newsroom/images/newsroom_vivid_Filipe_Castilhos.jpg',
+        'https://i.scdn.co/image/ab67616d0000b273d09f96d82310d4d77c14c108',
         'https://www.therooftopguide.com/rooftop-bars-in-sydney/Bilder/ivy-pool-club-600-3.jpg',
+        'https://i.scdn.co/image/ab67616d0000b273dcef905cb144d4867119850b',
         'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/04/b1/d0/qudos-bank-arena.jpg?w=1200&h=-1&s=1',
-        'https://cdn.tourbytransit.com/sydney/images/Luna-Park-Entrance-at-night.jpg'
+        'https://i.scdn.co/image/ab67616d0000b2734ed058b71650a6ca2c04adff',
+        'https://cdn.tourbytransit.com/sydney/images/Luna-Park-Entrance-at-night.jpg',
+        'https://i.scdn.co/image/ab67616d0000b273fa747621a53c8e2cc436dee0'
     ]
 
-    let labels = ['Home The Venue', 'Vivid Sydney', 'Ivy Club', 'Light It Up Festival', 'Lunar Park Sydney'];
+    let labels = ['Home The Venue', 'Planet Her', 'Vivid Sydney', 'one kiss', 'Ivy Club', '18 Months', 'Light It Up Festival', 'Lilac', 'Lunar Park Sydney', 'Midnights'];
 
     // another 2s later
     let venueContainer = document.createElement('div');
@@ -122,8 +127,7 @@ function beginAnimation() {
     let venueLabels = document.createElement('div');
     venueLabels.classList.add('venue-labels-container');
 
-
-    for (let i = 0; i < 5; ++i) {
+    for (let i = 0; i < 9; i += 2) {
         let div = document.createElement('div');
         div.classList.add('venue-item');
         div.style.animationDelay = (8000 + 200 * i) + 'ms';
@@ -131,12 +135,19 @@ function beginAnimation() {
         let image = document.createElement('img');
         image.classList.add('animation-album');
         image.style.animationDelay = (8000 + 200 * i) + 'ms';
-        image.src = imgs[i];
+        image.style.backgroundImage = `url(${imgs[i]})`;
+        image.addEventListener('mouseover',function(){
+            image.style.backgroundImage = `url(${imgs[i+1]})`;
+            span.textContent = labels[i+1];
+        })
+        image.addEventListener('mouseleave',function(){
+            image.style.backgroundImage = `url(${imgs[i]})`;
+            span.textContent = labels[i];
+        })
         div.appendChild(image);
 
         let span = document.createElement('span');
         span.textContent = labels[i];
-
         div.appendChild(span);
 
         venueContainer.appendChild(div);
