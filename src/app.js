@@ -7,12 +7,20 @@ import express from 'express';
 
 import NodeGeocoder from 'node-geocoder';
 
+import {createEntry, updateEntry, getEntry} from "./datastore.js";
+
 
 const geocoder = NodeGeocoder({
     provider: 'google',
     apiKey: process.env.GOOGLE_API_KEY, // for Mapquest, OpenCage, Google Premier
     formatter: null // 'gpx', 'string', ...
 });
+
+// let a = createEntry();
+// console.log(getEntry(a));
+// updateEntry(a, {hello: 'world'});
+// console.log(getEntry(a));
+
 
 
 var app = express();
@@ -54,12 +62,21 @@ app.get('/connect', async (req, res) => {
             },
         }
     )
+
+    if (spotify_data.status != 200) {
+        res.send('Something went wrong, this may be a limitation of the Spotify Developer Account');
+        return;
+    }
     console.dir(spotify_data.data.items);
-    res.redirect('/suggest');
+   
+    // Create a database entry to put the computed values in
+    let id = createEntry();
+
+    res.redirect('/results?id=' + id);
 })
 
-app.get('/suggest', function (req, res) {
-    res.render('pages/index.ejs');
+app.get('/results', function (req, res) {
+    res.render('pages/results.ejs');
 });
 
 app.get('/verifyAddress', async function (req, res) {
