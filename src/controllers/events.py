@@ -64,4 +64,4 @@ def getEvent(category = "concerts", country = "AU", title = "", userLoc = "0 0")
     print(eventsInCountry)
     return eventsInCountry
 
-getEvent(category = arguments[0], country = arguments[1], title = arguments[2], userLoc = "0 0")
+getEvent(category = arguments[0], country = arguments[1], title = arguments[2], userLoc = "-33.8641859 151.2165708")
