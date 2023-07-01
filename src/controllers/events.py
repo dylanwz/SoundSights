@@ -7,7 +7,7 @@ arguments = sys.argv[1:]
 for arg in arguments:
     print("argument: " + arg)
     
-def findRadius(location, industry = "parking"):
+def findRadius(location, industry = "other"):
     locStr = f"{location.split()[0]}, {location.split()[1]}"
     response = requests.get(
         url="https://api.predicthq.com/v1/suggested-radius/",
@@ -32,9 +32,9 @@ def getEvent(category = "concerts", country = "AU", title = "", userLoc = "0 0")
         country = "AU"
     if title == "\"\"":
         title = ""
-    eventsInCountry = {}
-    radiusToSearch = findRadius(userLoc)
-    print(radiusToSearch)
+    eventsInCountry = []
+    # radiusToSearch = findRadius(userLoc, "other")
+    # print(radiusToSearch)
     response = requests.get(
         url="https://api.predicthq.com/v1/events/",
         headers={
@@ -45,7 +45,9 @@ def getEvent(category = "concerts", country = "AU", title = "", userLoc = "0 0")
             "category": category,
             "country": country,
             "title": title,
-            "within": f"{radiusToSearch['radius']}{radiusToSearch['radius_unit']}@{radiusToSearch['location']['lat']},{radiusToSearch['location']['lon']}",
+            # "labels": ["instrument"],
+            # "within": f"{radiusToSearch['radius']}{radiusToSearch['radius_unit']}@{radiusToSearch['location']['lat']},{radiusToSearch['location']['lon']}",
+            "within": f"5km@{userLoc.split()[0]},{userLoc.split()[1]}",
             # "id": "",
             "limit": 10
         }
@@ -57,11 +59,13 @@ def getEvent(category = "concerts", country = "AU", title = "", userLoc = "0 0")
         # print("hi" + place['name'].strip())
         if (event['state'] == 'active'):
             # print(f"{event['title']}: {event['start']} - {event['location']}, {event['country']}")
-            eventsInCountry[event['title']] = [event['start'], event['location'], event['country']]
             temp = event['location'][1]
             event['location'][1] = event['location'][0]
             event['location'][0] = temp
+            eventsInCountry.append({'title': event['title'],
+                                       'details': [event['start'], event['location'], event['country']]
+                                       })
     print(eventsInCountry)
     return eventsInCountry
 
-getEvent(category = arguments[0], country = arguments[1], title = arguments[2], userLoc = "-33.8641859 151.2165708")
+getEvent(category = arguments[0], country = arguments[1], title = arguments[2], userLoc = "-33.86862 151.20503")

@@ -1,6 +1,8 @@
 import genres from "../genres.json" assert { type: 'json' };
 import genres_dict from "../genres_dict.json" assert { type: 'json' };
 import suggestedVenues from "../suggestedVenues.json" assert { type: 'json' };
+import amenities from "../amenities.json" assert { type: 'json' };
+import venueToCategory from "../venueCategories.json" assert { type: 'json' }
 
 // TO-DO: API for live events (get the data from the API---a Python child -> predictHQ)
 // TO-DO: Suggest places and events off of top genres
@@ -37,24 +39,49 @@ import exec from 'node:child_process'
 // TO-DO: Suggest places and events off of top genres
 
 // finds location/cities near user and events in nearby areas
-function findPlacesAndEvents(genresArtists, placeArr) {
-
+function getEvents(top_genres, userLocation) {
+    const events = {};
   // Places input: country - id - location - q(uery)
-  places = exec(`python /places.py '\"\"' '\"\"' '\"\"' 'Sydney'`);
+//   places = exec(`python /places.py '\"\"' '\"\"' '\"\"' 'Sydney'`);
 
   // Events: category - country - title (of event)
-  // Outputs dictionary of event: event details
-  events = exec(`python /events.py concerts '\"\"' 'AU', '\"\"'`);
+  // Outputs list of event objs
+  // Currently searching for events in 5km radius
+  // genre -> suggest venue -> category => search!!
+        // run the events finder function each for each genre, add it to events dict
+    const venuesList = []
+    for (const genre of top_genres) {
+        const venues = suggestedVenues[`${genre}`];
+        for (const venue of venues) {
+            if (!venuesList.includes(venue)) {
+                venuesList.push(venue);
+            }
+        }
+    }
+    for (const venue of venuesList) {
+        const eventsOUT = exec(`python /events.py ${venueToCategory[venue]} '\"\"' 'AU', '\"\"' '${userLocation['latitude']} ${userLocation['longitutde']}'`);
 
-  return {
-    places: places,
-    events: events,
-  }
+        for (const event of eventsOUT) {
+            if (events.hasOwnProperty(event.title)) {
+                events[event.title].count++;
+            } else {
+                events[event.title] = {count: 1,
+                                details: event.details
+                                }
+            }
+            
+        }
+    }
 
+    events = events.sort((a, b) => {
+        return a.count <= b.count ? 1 : -1;
+    })
+
+    return events;
 }
 
 // Sort genre-matched places by frequency
-export function suggest(top_genres, placeArr) {
+export function suggest(top_genres) {
   // Filter out non-existent genres
   let k = Object.keys(top_genres);
   for(let i = 0; i < k.length; i++) {
@@ -73,6 +100,11 @@ export function suggest(top_genres, placeArr) {
       return acc;  
     }, {})).sort((a,b) => { return b[1] - a[1] }));
   return sorted_genres;
+}
+
+function genreToVenue(sorted_genres, suggestedVenues) {
+
+    return bestAmenities;
 }
 
 console.log(suggest({'pop': 0.5, 'rock': 0.25, 'metal': 0.1, 'work-out': 0.1, 'bluegrass': 0.05}, {}))
