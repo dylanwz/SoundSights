@@ -14,6 +14,10 @@ app.get('/', function (req, res) {
     res.render('pages/index.ejs');
 });
 
+app.get('/suggest', function (req, res) {
+    pass;
+});
+
 var httpServer = http.createServer(app);
 
 httpServer.listen(3000);
