@@ -3,8 +3,6 @@ import genres_dict from "../genres_dict.json" assert { type: 'json' };
 import suggestedVenues from "../suggestedVenues.json" assert { type: 'json' };
 import amenities from "../amenities.json" assert { type: 'json' };
 import venueToCategory from "../venueCategories.json" assert { type: 'json' }
-
-// TO-DO: API for live events (get the data from the API---a Python child -> predictHQ)
 // TO-DO: Suggest places and events off of top genres
 
 function deundefiner(genre) {
@@ -35,11 +33,11 @@ export function get_spotify_genres(artist_arr) {
 
 }
 
-import exec from 'node:child_process'
+import {exec} from 'node:child_process'
 // TO-DO: Suggest places and events off of top genres
 
 // finds location/cities near user and events in nearby areas
-function getEvents(top_genres, userLocation) {
+export async function getEvents(top_genres, userLocation) {
     const events = {};
 
     // Outputs list of event objs
@@ -47,8 +45,11 @@ function getEvents(top_genres, userLocation) {
     // genre -> suggest venue -> category => search!!
     // run the events finder function each for each genre, add it to events dict
     const venuesList = []
-    for (const genre of top_genres) {
+    for (const genre of Object.keys(top_genres)) {
         const venues = suggestedVenues[`${genre}`];
+        console.log(venues)
+        if(!venues)
+          continue;
         for (const venue of venues) {
             if (!venuesList.includes(venue)) {
                 venuesList.push(venue);
@@ -57,8 +58,8 @@ function getEvents(top_genres, userLocation) {
     }
     for (const venue of venuesList) {
         // Events: category - country - title (of event) - user location
-        const eventsOUT = exec(`python /events.py ${venueToCategory[venue]} '${userLocation["administrativelevels"]["countryCode"]}' '\"\"' '${userLocation['latitude']} ${userLocation['longitutde']}'`);
-
+        const eventsOUT = JSON.parse(await exec(`python /events.py ${venueToCategory[venue]} '${userLocation.countryCode}' '\"\"' '${userLocation['latitude']} ${userLocation['longitutde']}'`));
+        console.log(eventsOUT);
         for (const event of eventsOUT) {
             if (events.hasOwnProperty(event.title)) {
                 events[event.title].count++;

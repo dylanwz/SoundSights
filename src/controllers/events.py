@@ -1,4 +1,6 @@
+
 import requests
+import json
 import sys
 # return value is denoted as R
 
@@ -64,6 +66,6 @@ def getEvent(category = "concerts", country = "AU", title = "", userLoc = "-33.8
                                        'details': [event['start'], event['location'], event['country'], event['category'], event['labels']]
                                        })
     print(eventsInCountry)
-    return eventsInCountry
-
+    return json.dumps(eventsInCountry, separators=(',',':'))
+    
 getEvent(category = arguments[0], country = arguments[1], title = arguments[2], userLoc = arguments[3])

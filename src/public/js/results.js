@@ -1,7 +1,8 @@
 let splashText = [
-    'Sifting through 42,372 Public Restroooms',
-    'Tasting 122,175,372 Fast Food Joints',
-    'Analysing 22,157,223 Nightclubs for good taste'
+    'Sifting through too many Public Restroooms',
+    'Tasting literally every Fast Food Joints',
+    'Analysing all Nightclubs for good taste',
+    'Running AI Queries lol'
 ]
 let curSplashItem = 0;
 let splashInterval;
@@ -47,8 +48,7 @@ function populateData() {
         evt.classList.add('event-item');
 
         let img = document.createElement('img');
-        img.src= place.photo; //'https://lh3.googleusercontent.com/p/AF1QipOUe_vAyegzyWo__reI8Ww37dtRypINv3HaMkBO=s1360-w1360-h1020';
-        img.alt = 'https://developers.google.com/static/maps/documentation/streetview/images/error-image-generic.png';
+        img.src= place.photo ? place.photo : 'https://developers.google.com/static/maps/documentation/streetview/images/error-image-generic.png'; //'https://lh3.googleusercontent.com/p/AF1QipOUe_vAyegzyWo__reI8Ww37dtRypINv3HaMkBO=s1360-w1360-h1020';
         evt.appendChild(img);
 
         let div = document.createElement('div');
@@ -74,4 +74,40 @@ function populateData() {
         evtCont.appendChild(evt);
         i++;
     }   
+
+
+    // evtCont = document.getElementById('events');
+    // evtCont.innerHTML = '';
+    //  i = 0;
+    // for(events of res.events) {
+    //     let evt = document.createElement('div');
+    //     evt.classList.add('event-item');
+
+    //     // let img = document.createElement('img');
+    //     // img.src= place.photo ? place.photo : 'https://developers.google.com/static/maps/documentation/streetview/images/error-image-generic.png'; //'https://lh3.googleusercontent.com/p/AF1QipOUe_vAyegzyWo__reI8Ww37dtRypINv3HaMkBO=s1360-w1360-h1020';
+    //     // evt.appendChild(img);
+
+    //     let div = document.createElement('div');
+
+    //     let span = document.createElement('span');
+    //     span.textContent = events.name.replaceAll('&apos;','');
+    //     div.appendChild(span);
+
+    //     let a = document.createElement('a');
+    //     let aspan = document.createElement('span');
+    //     aspan.textContent = events.lat + events.lon;
+    //     a.appendChild(aspan);
+    //     div.appendChild(a);
+
+
+    //     let span2 = document.createElement('span');
+    //     span2.textContent = 'Match: ' + Math.round(events.match*100) + '%';
+    //     span2.style.fontSize = '2vh';
+    //     div.appendChild(span2);
+
+    //     evt.appendChild(div);
+    //     evt.style.animationDelay = (i * 100) + 'ms';
+    //     evtCont.appendChild(evt);
+    //     i++;
+    // }   
 }

@@ -10,8 +10,9 @@ import session from 'express-session';
 
 
 import { createEntry, updateEntry, getEntry } from "./datastore.js";
-import { get_spotify_genres, suggest } from "./controllers/suggest.js"
+import { getEvents, get_spotify_genres, suggest } from "./controllers/suggest.js"
 import fs from 'fs';
+
 console.log('Loading OSM Database, this may take a minute...');
 let amenities = JSON.parse(fs.readFileSync('amenities.json'));
 
@@ -155,6 +156,7 @@ app.get('/connect', async (req, res) => {
                 obj['match'] = osm_venues[venue_keys[i]];
                 result.places.push(obj);
             }
+            // result.events= await getEvents(get_spotify_genres(spotify_data.data.items), location);
         }
         updateEntry(id, result);
         // console.log('Done querying');
