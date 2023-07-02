@@ -78,20 +78,20 @@ function getEvents(top_genres, userLocation) {
         return a.count <= b.count ? 1 : -1;
     })
 
-    // const amenities = {};
-    // for (const event of events) {
-    //     amenities.push({
-    //         "amentity": event.aenity,
-    //         "name": event.title,
-    //         "lat": event.lat,
-    //         "lon": event.lon,
-    //         "match": event.match,
-    //     })
-    // }
+    const amenities = {};
+    for (const event of events) {
+        amenities.push({
+            "amentity": event.amenity,
+            "name": event.title,
+            "lat": event.lat,
+            "lon": event.lon,
+            "match": event.match,
+        })
+    }
 
     return {
         events: events,
-        // amenities: amenities
+        amenities: amenities
     }
 }
 
