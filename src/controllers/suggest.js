@@ -57,7 +57,7 @@ function getEvents(top_genres, userLocation) {
     }
     for (const venue of venuesList) {
         // Events: category - country - title (of event) - user location
-        const eventsOUT = exec(`python /events.py ${venueToCategory[venue]} '\"\"' 'AU', '\"\"' '${userLocation['latitude']} ${userLocation['longitutde']}'`);
+        const eventsOUT = exec(`python /events.py ${venueToCategory[venue]} '${userLocation["administrativelevels"]["countryCode"]}' '\"\"' '${userLocation['latitude']} ${userLocation['longitutde']}'`);
 
         for (const event of eventsOUT) {
             if (events.hasOwnProperty(event.title)) {
