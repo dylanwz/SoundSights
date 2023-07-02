@@ -47,18 +47,19 @@ function populateData() {
         evt.classList.add('event-item');
 
         let img = document.createElement('img');
-        img.src='https://lh3.googleusercontent.com/p/AF1QipOUe_vAyegzyWo__reI8Ww37dtRypINv3HaMkBO=s1360-w1360-h1020';
+        img.src= place.photo; //'https://lh3.googleusercontent.com/p/AF1QipOUe_vAyegzyWo__reI8Ww37dtRypINv3HaMkBO=s1360-w1360-h1020';
+        img.alt = 'https://developers.google.com/static/maps/documentation/streetview/images/error-image-generic.png';
         evt.appendChild(img);
 
         let div = document.createElement('div');
 
         let span = document.createElement('span');
-        span.textContent = place.name;
+        span.textContent = place.name.replaceAll('&apos;','');
         div.appendChild(span);
 
         let a = document.createElement('a');
         let aspan = document.createElement('span');
-        aspan.textContent = 'Lat:' + place.lat + ',  Lon:' + place.lon;
+        aspan.textContent = place.address;
         a.appendChild(aspan);
         div.appendChild(a);
 

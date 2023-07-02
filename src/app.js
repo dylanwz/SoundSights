@@ -21,6 +21,8 @@ const geocoder = NodeGeocoder({
     formatter: null // 'gpx', 'string', ...
 });
 
+  
+
 // let a = createEntry();
 // console.log(getEntry(a));
 // updateEntry(a, {hello: 'world'});
@@ -83,7 +85,7 @@ app.get('/connect', async (req, res) => {
     res.redirect('/results?id=' + id);
 
     // Now do processing
-    setTimeout(() => {
+    setTimeout(async () => {
         // Get desired location
         let location = req.session.location;
         console.log(location);
@@ -125,6 +127,31 @@ app.get('/connect', async (req, res) => {
             })
             if (a.length > 1) {
                 let obj = a[Math.floor(Math.random() * a.length)];
+                
+                // Now just check its valid
+                // Cap at 5 iterations
+                for(let ee = 0; ee < 10; ee++) {
+                    obj = a[Math.floor(Math.random() * a.length)];
+                    
+                    let mapRes = (await askGoogleMaps(obj.name + ' ' + location.formattedAddress, location.lat, location.lon));
+                    console.dir(mapRes);
+                    if(!mapRes || !mapRes.candidates || mapRes.candidates == 0)
+                        continue;
+                    
+                    mapRes = mapRes.candidates[0];
+                    console.log(obj.name);
+
+                    if(!mapRes.name.toLowerCase().includes(obj.name.split(' ')[0].toLowerCase()))
+                        continue;
+                    
+                    obj['address'] = mapRes.formatted_address;
+                    
+                    obj['photo'] = (mapRes.photos!=null && mapRes.photos.length > 0) ? (`https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${mapRes?.photos[0]?.photo_reference}&key=${process.env.GOOGLE_API_KEY}`) : null;
+                    console.log('hit on attempt ' + ee)
+                    break;
+                }
+                
+                
                 obj['match'] = osm_venues[venue_keys[i]];
                 result.places.push(obj);
             }
@@ -155,6 +182,30 @@ app.get('/verifyAddress', async function (req, res) {
         res.send({ ok: true, location: response[0].formattedAddress });
 })
 
+// app.get('/googleImg', async function(req, res) {
+//     if(!req.query.reference)
+//         res.send(null);
+//     res.send( await getGooglePhoto(req.query.reference));
+// })
+
+async function askGoogleMaps(query, lat, lon) {
+return (await axios({
+    method: 'get',
+    url: `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${encodeURIComponent(query)}&inputtype=textquery&fields=formatted_address%2Cname%2Crating%2Cphoto&query=locationbias=circle%3A30000%40${lat}%2C${lon}&key=${process.env.GOOGLE_API_KEY}`,
+    headers: { }
+  })).data;
+  
+}
+
+async function getGooglePhoto(reference) {
+    if(!reference)
+        return null;
+    return (await axios({
+        method: 'get',
+        url: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${reference}&key=${process.env.GOOGLE_API_KEY}`,
+        headers: { }
+      })).data;
+}
 
 var httpServer = http.createServer(app);
 
