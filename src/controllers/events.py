@@ -61,7 +61,7 @@ def getEvent(category = "concerts", country = "AU", title = "", userLoc = "-33.8
             event['location'][1] = event['location'][0]
             event['location'][0] = temp
             eventsInCountry.append({'title': event['title'],
-                                       'details': [event['start'], event['location'], event['country']]
+                                       'details': [event['start'], event['location'], event['country'], event['category'], event['labels']]
                                        })
     print(eventsInCountry)
     return eventsInCountry

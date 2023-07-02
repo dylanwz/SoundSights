@@ -41,14 +41,11 @@ import exec from 'node:child_process'
 // finds location/cities near user and events in nearby areas
 function getEvents(top_genres, userLocation) {
     const events = {};
-  // Places input: country - id - location - q(uery)
-//   places = exec(`python /places.py '\"\"' '\"\"' '\"\"' 'Sydney'`);
 
-  // Events: category - country - title (of event)
-  // Outputs list of event objs
-  // Currently searching for events in 5km radius
-  // genre -> suggest venue -> category => search!!
-        // run the events finder function each for each genre, add it to events dict
+    // Outputs list of event objs
+    // Currently searching for events in 5km radius
+    // genre -> suggest venue -> category => search!!
+    // run the events finder function each for each genre, add it to events dict
     const venuesList = []
     for (const genre of top_genres) {
         const venues = suggestedVenues[`${genre}`];
@@ -59,6 +56,7 @@ function getEvents(top_genres, userLocation) {
         }
     }
     for (const venue of venuesList) {
+        // Events: category - country - title (of event) - user location
         const eventsOUT = exec(`python /events.py ${venueToCategory[venue]} '\"\"' 'AU', '\"\"' '${userLocation['latitude']} ${userLocation['longitutde']}'`);
 
         for (const event of eventsOUT) {
@@ -66,7 +64,11 @@ function getEvents(top_genres, userLocation) {
                 events[event.title].count++;
             } else {
                 events[event.title] = {count: 1,
-                                details: event.details
+                                amentity: event.details[3],
+                                lat: event.details[1][0],
+                                lon: event.details[1][1],
+                                "match": getMatch(top_genres, event.venue),
+                                // "address": 'str'
                                 }
             }
             
@@ -76,21 +78,37 @@ function getEvents(top_genres, userLocation) {
         return a.count <= b.count ? 1 : -1;
     })
 
-    const amenities = {};
-    for (const event of events) {
-        amenities.push({
-            "amentity": 'str',
-            "lat": event.details[1][0],
-            "lon": event.details[1][1],
-            "match": 0,
-            "name": event.title,
-        })
-    }
+    // const amenities = {};
+    // for (const event of events) {
+    //     amenities.push({
+    //         "amentity": event.aenity,
+    //         "name": event.title,
+    //         "lat": event.lat,
+    //         "lon": event.lon,
+    //         "match": event.match,
+    //     })
+    // }
 
     return {
         events: events,
-        amenities: amenities
+        // amenities: amenities
     }
+}
+
+// Get match % from
+function getMatch(top_genres, venueToMatch) {
+    let relatedGenres = 0;
+    const venuesList = [];
+    for (const venues of suggestedVenues) {
+        venuesList.push(venues);
+    }
+    for (let i = 0; i < venuesList.length; i++) {
+        if (venuesList[i].includes(venueToMatch)) {
+            relatedGenres++;
+        }
+    }
+
+    return relatedGenres / top_genres.length;
 }
 
 // Sort genre-matched places by frequency
